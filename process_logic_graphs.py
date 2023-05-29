@@ -1,0 +1,124 @@
+
+import numpy as np
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+import sys
+import os 
+from util import props_from_graph, maze_props, sol_props
+
+
+problog_path = "edgelists/problog"
+asp_path = "edgelists/asp"
+
+maze_size = 5
+results = []
+for fl in os.listdir(problog_path):
+    actual_path = problog_path + "/" + fl
+    uid_str = fl.strip(".txt")
+    G = nx.read_edgelist(actual_path)
+    st = "1"
+    nd = str(maze_size * maze_size)
+    sol_path = nx.shortest_path(G, st,nd, weight="weight")
+
+    cell_type = props_from_graph(G,maze_size)
+
+    maze_pops = maze_props(cell_type)
+
+    sol_pops = sol_props(sol_path,cell_type)
+
+    ha_sh = nx.weisfeiler_lehman_graph_hash(G)
+
+    result = {}
+    result["id"] = uid_str
+    result["alg"] = "problog"
+    result["hash"] = ha_sh
+    result["cell_type_maze_tu"] = maze_pops['tu']
+    result["cell_type_maze_s"] = maze_pops['s'] 
+    result["cell_type_maze_T"] = maze_pops['T']
+    result["cell_type_maze_c"] = maze_pops['c']
+
+    result["sol_type_maze_tu"] = sol_pops['tu']
+    result["sol_type_maze_s"] = sol_pops['s'] 
+    result["sol_type_maze_d"] = sol_pops['d']
+    result["sol_type_maze_len"] = sol_pops['len']
+    results.append(result)
+
+
+for fl in os.listdir(asp_path):
+    actual_path = asp_path + "/" + fl
+    uid_str = fl.strip(".txt")
+    G = nx.read_edgelist(actual_path)
+    st = "1"
+    nd = str(maze_size * maze_size)
+    sol_path = nx.shortest_path(G, st,nd, weight="weight")
+
+    cell_type = props_from_graph(G,maze_size)
+
+    maze_pops = maze_props(cell_type)
+
+    sol_pops = sol_props(sol_path,cell_type)
+
+    ha_sh = nx.weisfeiler_lehman_graph_hash(G)
+
+    result = {}
+    result["id"] = uid_str
+    result["alg"] = "asp"
+    result["hash"] = ha_sh
+    result["cell_type_maze_tu"] = maze_pops['tu']
+    result["cell_type_maze_s"] = maze_pops['s'] 
+    result["cell_type_maze_T"] = maze_pops['T']
+    result["cell_type_maze_c"] = maze_pops['c']
+
+    result["sol_type_maze_tu"] = sol_pops['tu']
+    result["sol_type_maze_s"] = sol_pops['s'] 
+    result["sol_type_maze_d"] = sol_pops['d']
+    result["sol_type_maze_len"] = sol_pops['len']
+
+    results.append(result)
+
+
+results_df = pd.DataFrame(results)
+results_df.to_csv("CSVs/logic_mazes_size_5-pr.csv")
+
+
+#repeated code becuase no time to write functions right now
+problog_learnt_path = "edgelists/problog-learnt"
+
+maze_size = 5
+results = []
+for fl in os.listdir(problog_learnt_path):
+    actual_path = problog_learnt_path + "/" + fl
+    uid_str = fl.strip(".txt")
+    G = nx.read_edgelist(actual_path)
+    st = "1"
+    nd = str(maze_size * maze_size)
+    sol_path = nx.shortest_path(G, st,nd, weight="weight")
+
+    cell_type = props_from_graph(G,maze_size)
+
+    maze_pops = maze_props(cell_type)
+
+    sol_pops = sol_props(sol_path,cell_type)
+
+    ha_sh = nx.weisfeiler_lehman_graph_hash(G)
+
+    result = {}
+    result["id"] = uid_str
+    result["alg"] = "problog_learnt"
+    result["hash"] = ha_sh
+    result["cell_type_maze_tu"] = maze_pops['tu']
+    result["cell_type_maze_s"] = maze_pops['s'] 
+    result["cell_type_maze_T"] = maze_pops['T']
+    result["cell_type_maze_c"] = maze_pops['c']
+
+    result["sol_type_maze_tu"] = sol_pops['tu']
+    result["sol_type_maze_s"] = sol_pops['s'] 
+    result["sol_type_maze_d"] = sol_pops['d']
+    result["sol_type_maze_len"] = sol_pops['len']
+    results.append(result)
+
+
+
+results_df = pd.DataFrame(results)
+results_df.to_csv("CSVs/learnt_mazes_size_5_as.csv")

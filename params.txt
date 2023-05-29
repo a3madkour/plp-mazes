@@ -1,0 +1,5 @@
+--rand-prob=<initial random passes>,<num allowed failures> --sign-def="rnd" --sign-def-disj="rnd" --rand-freq=0.5 --save-progress=0
+1:56
+--save-progress is the one that stops it from just re-using the same solution repeatedly
+1:57
+--rand-prob makes it try a bunch of random configurations before using heuristics
